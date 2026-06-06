@@ -68,6 +68,7 @@ class NvidiaFanController:
         self.running = False
         self.handles = []
         self.fan_counts = []
+        self.fan_control_available = True
 
     def init(self):
         """Initialize NVML and get GPU handles"""
@@ -97,6 +98,24 @@ class NvidiaFanController:
 
         log.info(f"Fan curve: {self.curve}")
         log.info(f"Poll interval: {self.poll_interval}s")
+        self._probe_fan_control()
+
+    def _probe_fan_control(self):
+        """Test fan speed write on first GPU/fan; warn once and disable if it fails."""
+        if not self.handles:
+            return
+        handle = self.handles[0]
+        try:
+            current = pynvml.nvmlDeviceGetFanSpeed_v2(handle, 0)
+            pynvml.nvmlDeviceSetFanSpeed_v2(handle, 0, current)
+        except pynvml.NVMLError as e:
+            self.fan_control_available = False
+            log.warning("=" * 50)
+            log.warning(f"FAN CONTROL UNAVAILABLE: {e}")
+            log.warning("Fan speeds will not be modified.")
+            log.warning("In WSL2, NVML fan writes are blocked by the Windows driver.")
+            log.warning("Use MSI Afterburner or NVIDIA Control Panel on the host.")
+            log.warning("=" * 50)
 
     def get_fan_speed_for_temp(self, temp: int) -> int:
         """Calculate fan speed based on temperature using the curve"""
@@ -132,12 +151,12 @@ class NvidiaFanController:
                         current = pynvml.nvmlDeviceGetFanSpeed_v2(handle, fan_idx)
                     current_speeds.append(current)
 
-                # Set fan speeds
-                for fan_idx in range(fan_count):
-                    try:
-                        pynvml.nvmlDeviceSetFanSpeed_v2(handle, fan_idx, target_speed)
-                    except pynvml.NVMLError as e:
-                        log.error(f"GPU {gpu_idx} Fan {fan_idx}: Error setting speed: {e}")
+                if self.fan_control_available:
+                    for fan_idx in range(fan_count):
+                        try:
+                            pynvml.nvmlDeviceSetFanSpeed_v2(handle, fan_idx, target_speed)
+                        except pynvml.NVMLError as e:
+                            log.error(f"GPU {gpu_idx} Fan {fan_idx}: Error setting speed: {e}")
 
                 log.info(f"GPU {gpu_idx}: {temp}°C -> {target_speed}% (was: {current_speeds})")
 
