@@ -13,10 +13,11 @@ A Python-based fan control daemon for headless NVIDIA GPUs, designed for high-po
 ## Fan Curves
 
 ### Quiet Mode (default)
+
 Matches NVIDIA default at idle, ramps aggressively under load.
 
 | Temperature | Fan Speed |
-|-------------|-----------|
+| ----------- | --------- |
 | ≤40°C | 30% |
 | 45°C | 40% |
 | 50°C | 55% |
@@ -25,8 +26,9 @@ Matches NVIDIA default at idle, ramps aggressively under load.
 | 65°C+ | 100% |
 
 ### Aggressive Mode
+
 | Temperature | Fan Speed |
-|-------------|-----------|
+| ----------- | --------- |
 | 30°C | 40% |
 | 40°C | 50% |
 | 50°C | 65% |
@@ -36,8 +38,9 @@ Matches NVIDIA default at idle, ramps aggressively under load.
 | 70°C+ | 100% |
 
 ### Performance Mode
+
 | Temperature | Fan Speed |
-|-------------|-----------|
+| ----------- | --------- |
 | 25°C | 50% |
 | 35°C | 60% |
 | 45°C | 75% |
@@ -46,6 +49,7 @@ Matches NVIDIA default at idle, ramps aggressively under load.
 | 60°C+ | 100% |
 
 ### Max Mode
+
 Always runs fans at 100%.
 
 ## Requirements
@@ -152,7 +156,7 @@ python3 nvidia-fan-control.py --help
 ## Command Line Options
 
 | Option | Description |
-|--------|-------------|
+| ------ | ----------- |
 | `--mode`, `-m` | Fan curve mode: `quiet` (default), `aggressive`, `performance`, or `max` |
 | `--interval`, `-i` | Poll interval in seconds (default: 2.0) |
 | `--once` | Set fans once and exit (don't run as daemon) |
