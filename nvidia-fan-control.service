@@ -5,7 +5,7 @@ Wants=nvidia-persistenced.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 /opt/nvidia-fan-control/nvidia-fan-control.py --mode quiet --interval 1
+ExecStart=/root/.local/bin/nvidia-fan-control --mode quiet --interval 1
 ExecStop=/bin/kill -SIGTERM $MAINPID
 Restart=on-failure
 RestartSec=5

@@ -1,6 +1,8 @@
 # Fix without reporting on leftover violations
 fix-only = true
 
+src = ["src"]
+
 # Enumerate all fixed violations
 show-fixes = true
 

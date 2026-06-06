@@ -1,10 +1,8 @@
-#!/usr/bin/env python3
-
 """
 Aggressive NVIDIA GPU Fan Control Daemon for Headless GPUs
 Designed for high-power AI workloads on RTX PRO 6000 cards
 
-Run as: sudo python3 nvidia-fan-control.py
+Run as: sudo nvidia-fan-control
 Or install as a systemd service
 """
 

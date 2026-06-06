@@ -55,38 +55,33 @@ Always runs fans at 100%.
 ## Requirements
 
 - NVIDIA GPU with fan control support
-- Python 3.8+
-- `pynvml` package
+- Python 3.13+
 - Root/sudo access (required for fan control)
+- [uv](https://docs.astral.sh/uv/)
 
 ## Installation
 
-### 1. Install pynvml
+### 1. Install the tool
 
 ```bash
-sudo apt install python3-pynvml
+# Fan control daemon only
+sudo uv tool install "git+https://github.com/pythoninthegrass/nvidia_fan_control"
+
+# With the vLLM stress tester
+sudo uv tool install "git+https://github.com/pythoninthegrass/nvidia_fan_control[stress]"
 ```
 
-### 2. Copy the script to system location
-
-```bash
-sudo mkdir -p /opt/nvidia-fan-control
-sudo cp nvidia-fan-control.py /opt/nvidia-fan-control/
-sudo chmod +x /opt/nvidia-fan-control/nvidia-fan-control.py
-```
-
-### 3. Install the systemd service
+### 2. Install the systemd service
 
 ```bash
 sudo cp nvidia-fan-control.service /etc/systemd/system/
 sudo systemctl daemon-reload
 ```
 
-### 4. Enable and start the service
+### 3. Enable and start the service
 
 ```bash
-sudo systemctl enable nvidia-fan-control.service
-sudo systemctl start nvidia-fan-control.service
+sudo systemctl enable --now nvidia-fan-control.service
 ```
 
 ## Usage
@@ -118,21 +113,23 @@ sudo nano /etc/systemd/system/nvidia-fan-control.service
 ```
 
 Change the `ExecStart` line:
+
 ```ini
 # For quiet mode (default - silent idle, aggressive ramp):
-ExecStart=/usr/bin/python3 /opt/nvidia-fan-control/nvidia-fan-control.py --mode quiet --interval 1
+ExecStart=/root/.local/bin/nvidia-fan-control --mode quiet --interval 1
 
 # For aggressive mode (always audible):
-ExecStart=/usr/bin/python3 /opt/nvidia-fan-control/nvidia-fan-control.py --mode aggressive --interval 1
+ExecStart=/root/.local/bin/nvidia-fan-control --mode aggressive --interval 1
 
 # For performance mode (louder, cooler):
-ExecStart=/usr/bin/python3 /opt/nvidia-fan-control/nvidia-fan-control.py --mode performance --interval 1
+ExecStart=/root/.local/bin/nvidia-fan-control --mode performance --interval 1
 
 # For max cooling (100% always):
-ExecStart=/usr/bin/python3 /opt/nvidia-fan-control/nvidia-fan-control.py --mode max --interval 1
+ExecStart=/root/.local/bin/nvidia-fan-control --mode max --interval 1
 ```
 
 Then reload and restart:
+
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl restart nvidia-fan-control
@@ -140,17 +137,15 @@ sudo systemctl restart nvidia-fan-control
 
 ## Manual Usage
 
-You can also run the script manually:
-
 ```bash
 # Run once and exit (fans return to auto after a few minutes)
-sudo python3 nvidia-fan-control.py --once
+sudo nvidia-fan-control --once
 
 # Run as daemon with custom interval
-sudo python3 nvidia-fan-control.py --mode performance --interval 2
+sudo nvidia-fan-control --mode performance --interval 2
 
 # Show help
-python3 nvidia-fan-control.py --help
+nvidia-fan-control --help
 ```
 
 ## Command Line Options
@@ -167,7 +162,7 @@ python3 nvidia-fan-control.py --help
 sudo systemctl stop nvidia-fan-control
 sudo systemctl disable nvidia-fan-control
 sudo rm /etc/systemd/system/nvidia-fan-control.service
-sudo rm -rf /opt/nvidia-fan-control
+sudo uv tool uninstall nvidia-fan-control
 sudo systemctl daemon-reload
 ```
 

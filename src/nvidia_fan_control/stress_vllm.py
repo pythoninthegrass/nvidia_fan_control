@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Stress test script for local vLLM server.
 Makes parallel HTTP requests (up to 10 concurrent) until Ctrl+C.
