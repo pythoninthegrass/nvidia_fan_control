@@ -18,12 +18,12 @@ Matches NVIDIA default at idle, ramps aggressively under load.
 
 | Temperature | Fan Speed |
 | ----------- | --------- |
-| ≤40°C | 30% |
-| 45°C | 40% |
-| 50°C | 55% |
-| 55°C | 75% |
-| 60°C | 90% |
-| 65°C+ | 100% |
+| ≤40°C | 20% |
+| 50°C | 30% |
+| 60°C | 45% |
+| 70°C | 65% |
+| 75°C | 80% |
+| 80°C+ | 100% |
 
 ### Aggressive Mode
 
@@ -58,6 +58,13 @@ Always runs fans at 100%.
 - Python 3.13+
 - Root/sudo access (required for fan control)
 - [uv](https://docs.astral.sh/uv/)
+
+### Tested on
+
+| OS | Version |
+| -- | ------- |
+| Ubuntu | 26.04 |
+| CachyOS | 2026.06 (kernel 7.0.11) |
 
 ## Installation
 
